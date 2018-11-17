@@ -1,8 +1,14 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const mongoose = require("mongoose");
+
+const BookSchema = require("../schemata/BookSchema");
 
 router.get('/', function (req, res, next) {
-    res.render('index', { title: 'Express' });
+    let Books = mongoose.model("Book", BookSchema);
+    Books.find({}, (err, books) => {
+
+    });
 });
 
 router.get('/create/', function (req, res, next) {});

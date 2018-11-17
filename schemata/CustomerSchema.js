@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const {getNextValue} = require("./helpers/sequence");
 
 let CustomerSchema = new Schema({
     id: Number,
@@ -11,6 +12,10 @@ let CustomerSchema = new Schema({
     deactivation_cause: { type: String, default: null },
     created_date: { type: Date, default: Date.now },
     updated_date: Date
+});
+
+CustomerSchema.pre("save", async function () {
+    this.id = await getNextValue("customers_counter"); // создали автоматически генерируемый sequence counter
 });
 
 module.exports = CustomerSchema;

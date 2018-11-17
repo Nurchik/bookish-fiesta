@@ -26,11 +26,16 @@ async function createSequenceCounter (connection, name, initial_value, step, lim
 }
 
 
-async function getNextValue (sequence_counter_name) {
+async function getNextValue (connection, sequence_counter_name) {
     let SequenceCounterModel = getSequenceCounterModel(connection);
-
+    let {step} = await SequenceCounterModel.findOne({name: sequence_counter_name});
+    let {value} = await SequenceCounterModel.findOneAndUpdate({name: sequence_counter_name}, {$inc: {value: step}}, {new: true});
+    return value;
 }
 
-function removeSequenceCounter (sequence_counter_name) {
-
+async function removeSequenceCounter (connection, sequence_counter_name) {
+    let SequenceCounterModel = getSequenceCounterModel(connection);
+    await SequenceCounterModel.deleteOne({name: sequence_counter_name});
 }
+
+module.exports = {createSequenceCounter, getNextValue, removeSequenceCounter};
