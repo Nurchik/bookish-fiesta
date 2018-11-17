@@ -1,13 +1,23 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require("mongoose");
+const _ = require("lodash");
 
 const BookSchema = require("../schemata/BookSchema");
+const { SuccessfulResponseBuilder, UnsuccessfulResponseBuilder, ExceptionResponseBuilder } = require("../helpers/response")
 
 router.get('/', function (req, res, next) {
     let Books = mongoose.model("Book", BookSchema);
     Books.find({}, (err, books) => {
+        if (err) {
+            next(err);
+        } else {
+            let books_prepared = books.map(book => {
+                return _.pick(book, [""])
+            })
 
+            res.status(200).json(books.map(book))
+        }
     });
 });
 
